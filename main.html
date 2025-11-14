@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkNow - Parcări în timp real Timișoara</title>
+    <meta name="description" content="Găsește cele mai apropiate locuri de parcare disponibile în Timișoara în timp real">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="top-navbar">
+        <nav class="navbar-rounded">
+            <div class="navbar-content">
+                <a href="#" class="navbar-brand-custom">
+                    <div class="logo-circle">
+                        <div class="logo-inner"></div>
+                    </div>
+                    <span class="brand-text">ParkNow</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="split-container">
+        <div class="main-container">
+            <div class="map-section">
+                <div id="map"></div>
+            </div>
+
+            <div class="content-section">
+                <div class="search-wrapper">
+                    <input id="address" type="text" placeholder="Caută adresă în Timișoara..." aria-label="Căutare adresă">
+                </div>
+
+                <div class="hero-content" id="heroContent">
+                    <h1 class="hero-title">Găsește parcarea perfectă în Timișoara</h1>
+                    <p class="hero-subtitle">
+                        Descoperă locuri de parcare disponibile în timp real. 
+                        Economisește timp și evită stresul de a căuta parcare.
+                    </p>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="findParkingBtn">
+                            🅿️ Găsește Parcare
+                        </button>
+                        <button class="btn btn-secondary" id="myLocationBtn">
+                            📍 Locația Mea
+                        </button>
+                    </div>
+                    
+                    <div class="action-buttons" style="margin-top: 15px;">
+                        <button class="btn btn-add-parking" id="addParkingBtn">
+                            ➕ Adaugă Parcare Nouă
+                        </button>
+                    </div>
+                </div>
+
+                <div class="parking-details" id="parkingDetails" style="display: none;">
+                    <div class="details-header">
+                        <div>
+                            <h2 class="details-title" id="detailsTitle">Selectează o zonă</h2>
+                            <span class="details-badge" id="detailsBadge">În așteptare</span>
+                        </div>
+                        <button class="close-details-btn" id="closeDetailsBtn" aria-label="Închide">×</button>
+                    </div>
+                    
+                    <div class="details-content">
+                        <div class="info-section">
+                            <div class="info-label">Status Parcare</div>
+                            <div class="info-value" id="detailsDescription">Selectează o zonă de pe hartă pentru detalii</div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-label">Disponibilitate</div>
+                            <div class="info-value" id="detailsAvailableSpots">-</div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-label">Tarif</div>
+                            <div class="info-value" id="detailsPricing">? RON / oră</div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-label">Program</div>
+                            <div class="info-value" id="detailsSchedule">???</div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-label">Facilități</div>
+                            <div class="info-value" id="detailsFacilities">
+                                <div class="facility-tags">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-label">Ultima actualizare</div>
+                            <div class="info-value" id="detailsLastUpdate">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="detailsDirectionsBtn">📍 Direcții</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="key.js"></script>
+    <script src="script.js"></script>
+    <script src="zone.js"></script>
+    <script src="login-redirect.js"></script>
+    
+    
+</body>
+</html>
