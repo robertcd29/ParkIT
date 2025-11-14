@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkNow</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    </head>
+<body>
+    <div class="popup-panel" id="sidebar">
+        <div class="popup-header">
+            <div>
+                <h2 class="popup-title" id="title">Zona Convention Center</h2>
+                <span class="popup-badge" id="statusBadge">În lucru</span>
+            </div>
+            <button class="close-btn" id="closeBtn">×</button>
+        </div>
+        
+        <div class="popup-content">
+            <div class="info-section">
+                <div class="info-label">Status Parcare</div>
+                <div class="info-value" id="description">În lucru</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Locuri Disponibile</div>
+                <div class="info-value" id="availableSpots">25 / 50 locuri</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Tarif</div>
+                <div class="info-value" id="pricing">5 RON / oră</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Program</div>
+                <div class="info-value" id="schedule">Non-stop</div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-label">Facilități</div>
+                <div class="info-value" id="facilities">
+                    <div class="facility-tags">
+                        <span class="facility-tag">🅿️ Parcare supravegheată</span>
+                        <span class="facility-tag">♿ Acces persoane dizabilități</span>
+                        <span class="facility-tag">🔌 Stații încărcare EV</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="directionsBtn">📍 Direcții</button>
+            <button class="btn btn-primary" id="reserveBtn">🚗 Rezervă Loc</button>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+        <input id="address" type="text" placeholder="Introdu adresa">
+    </div>
+    </nav>
+    <div id="map"></div>
+
+    <script src="key.js"></script>
+    <script src="zone.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+</body>
+</html>
