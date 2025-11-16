@@ -10,7 +10,6 @@ import traceback
 from decimal import Decimal
 from starlette.websockets import WebSocketDisconnect, WebSocketState
 
-# ==================== SQLModel Classes ====================
 
 class ParkingCoordinate(SQLModel, table=True):
     __tablename__ = "parking_coordinates"
@@ -40,7 +39,6 @@ class ParkingSpot(SQLModel, table=True):
     coordinates: List["ParkingCoordinate"] = Relationship(back_populates="spot")
 
 
-# ==================== Response Models ====================
 
 class CoordinateRead(SQLModel):
     latitude: float
@@ -62,7 +60,6 @@ class ParkingSpotRead(SQLModel):
     coordinates: List[CoordinateRead]
 
 
-# ==================== Input/Create Models ====================
 
 class ParkingCoordinateIn(SQLModel):
     latitude: float
@@ -96,7 +93,6 @@ class DetectionData(BaseModel):
     total_spots: int
 
 
-# ==================== SQLModel Engine ====================
 DATABASE_URL = "postgresql://postgres:d@localhost:5432/smart_park"
 engine = create_engine(DATABASE_URL, echo=True)
 
@@ -106,7 +102,6 @@ def get_session():
         yield session
 
 
-# ==================== FastAPI App ====================
 
 app = FastAPI()
 active_connections: List[WebSocket] = []
@@ -117,7 +112,6 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            # Broadcast la toți clienții conectați
             for connection in active_connections:
                 try:
                     await connection.send_text(f"Update: {data}")
@@ -129,13 +123,12 @@ async def websocket_endpoint(websocket: WebSocket):
             active_connections.remove(websocket)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all origins
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ==================== DB Helper ====================
 
 def get_db_connection():
     try:
@@ -150,10 +143,9 @@ def get_db_connection():
         )
         return conn
     except Exception as e:
-        print(f"❌ EROARE CRITICĂ DB: {e}")
+        print(f"EROARE CRITICĂ DB: {e}")
         raise e
 
-# ==================== API Endpoints ====================
 
 @app.get("/api/v1/parcari/all")
 def get_all_parking_data(session: Session = Depends(get_session)):
@@ -173,8 +165,8 @@ def get_all_parking_data(session: Session = Depends(get_session)):
                 "price_per_hour": float(spot.price_per_hour) if spot.price_per_hour is not None else None,
                 "schedule": spot.schedule,
                 "has_surveillance": spot.has_surveillance,
-		"has_disabled_access": spot.has_disabled_access,
-		"has_ev_charging": spot.has_ev_charging,
+		        "has_disabled_access": spot.has_disabled_access,
+		        "has_ev_charging": spot.has_ev_charging,
                 "coordinates": [
                     {
                         "latitude": float(c.latitude),
@@ -188,7 +180,7 @@ def get_all_parking_data(session: Session = Depends(get_session)):
     except Exception as e:
         traceback.print_exc()
         return {"status": "error", "message": str(e)}
-
+        
 
 @app.post("/api/v1/parcari", status_code=201) 
 def create_parking_spot(spot_data: ParkingSpotCreate, session: Session = Depends(get_session)):
@@ -215,19 +207,17 @@ def create_parking_spot(spot_data: ParkingSpotCreate, session: Session = Depends
         return {"status": "error", "message": str(e)}
 
 
-# ==================== WebSocket ====================
 
 @app.websocket("/ws/parking")   
 async def websocket_parking(websocket: WebSocket):
     await websocket.accept()
-    print("✅ Client connected to /ws/parking")
+    print("Client connected to /ws/parking")
     
     try:
         while True:
             try:
                 conn = get_db_connection()
                 cur = conn.cursor()
-                # ✅ SOLUȚIA: Selectează și coordonatele folosind JOIN
                 cur.execute("""
                     SELECT 
                         ps.parking_number,
@@ -237,9 +227,9 @@ async def websocket_parking(websocket: WebSocket):
                         ps.total_spots,
                         ps.price_per_hour,
                         ps.schedule
-			ps.has_surveillance,
-			ps.has_disabled_access, 
-			ps.has_ev_charging,,
+			            ps.has_surveillance,
+			            ps.has_disabled_access, 
+			            ps.has_ev_charging,,
                         COALESCE(
                             json_agg(
                                 json_build_object(
@@ -253,8 +243,8 @@ async def websocket_parking(websocket: WebSocket):
                     FROM parking_spots ps
                     LEFT JOIN parking_coordinates pc ON ps.parking_number = pc.parking_number
                     GROUP BY ps.parking_number, ps.parking_name, ps.empty_spots, 
-                             ps.occupied_spots, ps.total_spots, ps.price_per_hour, ps.schedule, ps.has_surveillance,
-			     ps.has_disabled_access, ps.has_ev_charging
+                             ps.occupied_spots, ps.total_spots, ps.price_per_hour, ps.schedule, 
+                             ps.has_surveillance, ps.has_disabled_access, ps.has_ev_charging
 
                     ORDER BY ps.parking_number
                 """)
@@ -270,17 +260,15 @@ async def websocket_parking(websocket: WebSocket):
                     }
                     serializable_rows.append(clean_row)
                 
-                # Încearcă să trimiți, dacă eșuează oprește bucla
                 try:
                     await websocket.send_json(serializable_rows)
                 except Exception:
-                    # Client deconectat, oprește bucla fără eroare
                     break
                     
             except Exception as db_e:
                 # Doar erori de bază de date (nu de WebSocket)
                 if "ClientDisconnected" not in str(type(db_e).__name__):
-                    print(f"❌ WebSocket DB Error: {db_e}")
+                    print(f"WebSocket DB Error: {db_e}")
                     traceback.print_exc()
                 else:
                     # Client deconectat
@@ -289,16 +277,15 @@ async def websocket_parking(websocket: WebSocket):
             await asyncio.sleep(5)
             
     except WebSocketDisconnect:
-        print("✅ Client deconectat normal")
+        print("Client deconectat normal")
     except Exception as e:
         if "ClientDisconnected" not in str(type(e).__name__):
-            print(f"❌ Eroare neașteptată în WebSocket: {e}")
+            print(f"Eroare neașteptată în WebSocket: {e}")
             traceback.print_exc()
     finally:
         print("🔌 Conexiune WebSocket închisă")
 
 
-# ==================== Health Check ====================
 
 @app.get("/")
 def read_root():
@@ -311,7 +298,6 @@ def read_root():
         ]
     }
 
-# ==================== AI Detection ====================
 
 @app.post("/api/detection")
 def receive_detection(data: DetectionData):
